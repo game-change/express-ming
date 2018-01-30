@@ -3,16 +3,16 @@
 let should = require('should'),
     express = require('express'),
     request = require('supertest'),
-    mung = require('../');
+    ming = require('../');
 
-describe ('mung headers', () => {
+describe ('ming headers', () => {
 
-    it('should return the munged headers', done => {
+    it('should return the minged headers', done => {
         function inspect (req, res) {
             res.set('x-inspected-by', 'me');
         }
         let server = express()
-            .use(mung.headers(inspect))
+            .use(ming.headers(inspect))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -32,7 +32,7 @@ describe ('mung headers', () => {
             });
         }
         let server = express()
-            .use(mung.headersAsync(inspect))
+            .use(ming.headersAsync(inspect))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -49,7 +49,7 @@ describe ('mung headers', () => {
             req.hopefully_fails();
         }
         let server = express()
-            .use(mung.headers(error))
+            .use(ming.headers(error))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -65,7 +65,7 @@ describe ('mung headers', () => {
             });
         }
         let server = express()
-            .use(mung.headersAsync(error))
+            .use(ming.headersAsync(error))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')

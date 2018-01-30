@@ -4,9 +4,9 @@ let should = require('should'),
     Promise = require('bluebird'),
     express = require('express'),
     request = require('supertest'),
-    mung = require('../');
+    ming = require('../');
 
-describe ('mung jsonAsync', () => {
+describe ('ming jsonAsync', () => {
 
     function inspect (json, req, res) {
         return Promise.resolve(json)
@@ -31,9 +31,9 @@ describe ('mung jsonAsync', () => {
             .then(json => json.foo.bar.hopefully.fails())
     }
 
-    it('should return the munged JSON result', done => {
+    it('should return the minged JSON result', done => {
         let server = express()
-            .use(mung.jsonAsync(inspect))
+            .use(ming.jsonAsync(inspect))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -46,9 +46,9 @@ describe ('mung jsonAsync', () => {
             .end(done);
     });
 
-    it('should not mung an error response (by default)', done => {
+    it('should not ming an error response (by default)', done => {
         let server = express()
-            .use(mung.jsonAsync(inspect))
+            .use(ming.jsonAsync(inspect))
             .get('/', (req, res) => res.status(404).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -59,9 +59,9 @@ describe ('mung jsonAsync', () => {
             .end(done);
     });
 
-   it('should mung an error response when told to', done => {
+   it('should ming an error response when told to', done => {
         let server = express()
-            .use(mung.jsonAsync(inspect, { mungError: true} ))
+            .use(ming.jsonAsync(inspect, { mingError: true} ))
             .get('/', (req, res) => res.status(404).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -76,7 +76,7 @@ describe ('mung jsonAsync', () => {
 
     it('should return 204 on null JSON result', done => {
         let server = express()
-            .use(mung.jsonAsync(remove))
+            .use(ming.jsonAsync(remove))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -84,9 +84,9 @@ describe ('mung jsonAsync', () => {
             .end(done);
     });
 
-    it('should return a munged scalar result as text/plain', done => {
+    it('should return a minged scalar result as text/plain', done => {
         let server = express()
-            .use(mung.jsonAsync(reduce))
+            .use(ming.jsonAsync(reduce))
             .get('/', (req, res) => res.status(200).json({ a: 'alpha' }).end());
         request(server)
             .get('/')
@@ -104,7 +104,7 @@ describe ('mung jsonAsync', () => {
             return Promise.resolve(json);
         }
         let server = express()
-            .use(mung.jsonAsync(error))
+            .use(ming.jsonAsync(error))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -119,7 +119,7 @@ describe ('mung jsonAsync', () => {
     it('should 500 on an exception', done => {
         let server = express()
             .use((err, req, res, next) => res.status(501).send(err.message).end())
-            .use(mung.jsonAsync(error))
+            .use(ming.jsonAsync(error))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')

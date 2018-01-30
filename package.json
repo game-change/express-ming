@@ -1,6 +1,6 @@
 {
-  "name": "express-mung",
-  "version": "0.4.6",
+  "name": "express-ming",
+  "version": "0.4.8",
   "description": "Transform an express response (or make until no good)",
   "main": "index.js",
   "scripts": {
@@ -8,24 +8,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/richardschneider/express-mung.git"
+    "url": "git+https://github.com/game-change/express-ming.git"
   },
   "keywords": [
-    "mung",
+    "ming",
     "middleware",
     "transform",
     "response",
     "express"
   ],
-  "author": "Richard Schneider <makaretu@gmail.com>",
+  "author": "K V Adhityan <adhityan@hotmail.com>",
   "contributors": [
-      "Ido Schachter <ido.schachter@ironsrc.com>"
+      "Ido Schachter <ido.schachter@ironsrc.com>",
+      "Richard Schneider <makaretu@gmail.com>"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/richardschneider/express-mung/issues"
+    "url": "https://github.com/game-change/express-ming/issues"
   },
-  "homepage": "https://github.com/richardschneider/express-mung#readme",
+  "homepage": "https://github.com/game-change/express-ming#readme",
   "devDependencies": {
     "bluebird": "^3.0.5",
     "express": "^4.13.3",

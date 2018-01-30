@@ -1,13 +1,13 @@
 'use strict';
 
-let mung = {};
+let ming = {};
 let faux_fin = { end: () => null };
 
 function isScalar(v) {
     return typeof v !== 'object' && !Array.isArray(v);
 }
 
-mung.onError = (err, req, res) => {
+ming.onError = (err, req, res) => {
     res
         .status(500)
         .set('content-language', 'en')
@@ -16,25 +16,30 @@ mung.onError = (err, req, res) => {
     return res;
 };
 
-mung.json = function json (fn, options) {
+ming.json = function json (fn, options) {
     return function (req, res, next) {
         let original = res.json;
         options = options || {};
-        let mungError = options.mungError;
+        let mingError = options.mingError;
 
-        function json_hook (json) {
+        function json_hook (json, jsonWithStatusCode) {
+            if(jsonWithStatusCode) {
+                res.statusCode = json;
+                json = jsonWithStatusCode;
+            }
+
             let originalJson = json;
             res.json = original;
             if (res.headersSent)
                 return res;
-            if (!mungError && res.statusCode >= 400)
+            if (!mingError && res.statusCode >= 400)
                 return original.call(this, json);
 
-            // Run the munger
+            // Run the minger
             try {
                 json = fn(json, req, res);
             } catch (e) {
-                return mung.onError(e, req, res);
+                return ming.onError(e, req, res);
             }
             if (res.headersSent)
                 return res;
@@ -61,17 +66,22 @@ mung.json = function json (fn, options) {
     }
 }
 
-mung.jsonAsync = function json (fn, options) {
+ming.jsonAsync = function json (fn, options) {
     return function (req, res, next) {
         let original = res.json;
         options = options || {};
-        let mungError = options.mungError;
+        let mingError = options.mingError;
 
-        function json_async_hook (json) {
+        function json_async_hook (json, jsonWithStatusCode) {
+            if(jsonWithStatusCode) {
+                res.statusCode = json;
+                json = jsonWithStatusCode;
+            }
+
             res.json = original;
             if (res.headersSent)
                 return;
-            if (!mungError && res.statusCode >= 400)
+            if (!mingError && res.statusCode >= 400)
                 return original.call(this, json);
             try {
                 fn(json, req, res)
@@ -91,9 +101,9 @@ mung.jsonAsync = function json (fn, options) {
 
                     return original.call(this, json);
                 })
-                .catch(e => mung.onError(e, req, res));
+                .catch(e => ming.onError(e, req, res));
             } catch (e) {
-                mung.onError(e, req, res);
+                ming.onError(e, req, res);
             }
 
             return faux_fin;
@@ -104,7 +114,7 @@ mung.jsonAsync = function json (fn, options) {
     }
 }
 
-mung.headers = function headers (fn) {
+ming.headers = function headers (fn) {
     return function (req, res, next) {
         let original = res.end;
         function headers_hook () {
@@ -113,10 +123,10 @@ mung.headers = function headers (fn) {
                 try {
                     fn(req, res);
                 } catch (e) {
-                    return mung.onError(e, req, res);
+                    return ming.onError(e, req, res);
                 }
                 if (res.headersSent) {
-                    console.error('sending response while in mung.headers is undefined behaviour');
+                    console.error('sending response while in ming.headers is undefined behaviour');
                     return;
                 }
             }
@@ -128,12 +138,12 @@ mung.headers = function headers (fn) {
     }
 }
 
-mung.headersAsync = function headersAsync (fn) {
+ming.headersAsync = function headersAsync (fn) {
     return function (req, res, next) {
         let original = res.end;
         let onError = e => {
             res.end = original;
-            return mung.onError(e, req, res);
+            return ming.onError(e, req, res);
         };
         function headers_async_hook () {
             if (res.headersSent)
@@ -159,4 +169,4 @@ mung.headersAsync = function headersAsync (fn) {
     }
 }
 
-module.exports = mung;
+module.exports = ming;

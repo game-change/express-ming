@@ -3,9 +3,9 @@
 let should = require('should'),
     express = require('express'),
     request = require('supertest'),
-    mung = require('../');
+    ming = require('../');
 
-describe ('mung json', () => {
+describe ('ming json', () => {
 
     function inspect (json, req, res) {
         json.inspected_by = 'me'
@@ -23,9 +23,9 @@ describe ('mung json', () => {
         json.foo.bar.hopefully.fails();
     }
 
-    it('should return the munged JSON result', done => {
+    it('should return the minged JSON result', done => {
         let server = express()
-            .use(mung.json(inspect))
+            .use(ming.json(inspect))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -38,9 +38,9 @@ describe ('mung json', () => {
             .end(done);
     });
 
-    it('should not mung an error response (by default)', done => {
+    it('should not ming an error response (by default)', done => {
         let server = express()
-            .use(mung.json(inspect))
+            .use(ming.json(inspect))
             .get('/', (req, res) => res.status(404).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -51,9 +51,9 @@ describe ('mung json', () => {
             .end(done);
     });
 
-    it('should mung an error response when told to', done => {
+    it('should ming an error response when told to', done => {
         let server = express()
-            .use(mung.json(inspect, { mungError: true }))
+            .use(ming.json(inspect, { mingError: true }))
             .get('/', (req, res) => res.status(404).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -68,7 +68,7 @@ describe ('mung json', () => {
 
     it('should return 204 on null JSON result', done => {
         let server = express()
-            .use(mung.json(remove))
+            .use(ming.json(remove))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }));
         request(server)
             .get('/')
@@ -76,9 +76,9 @@ describe ('mung json', () => {
             .end(done);
     });
 
-    it('should return the munged JSON result from a res.send', done => {
+    it('should return the minged JSON result from a res.send', done => {
         let server = express()
-            .use(mung.json(inspect))
+            .use(ming.json(inspect))
             .get('/', (req, res) => res.status(200).send({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -91,9 +91,9 @@ describe ('mung json', () => {
             .end(done);
     });
 
-    it('should return a munged scalar result as text/plain', done => {
+    it('should return a minged scalar result as text/plain', done => {
         let server = express()
-            .use(mung.json(reduce))
+            .use(ming.json(reduce))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -110,7 +110,7 @@ describe ('mung json', () => {
             res.status(403).send('no permissions')
         }
         let server = express()
-            .use(mung.json(error))
+            .use(ming.json(error))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -125,7 +125,7 @@ describe ('mung json', () => {
     it('should 500 on a synchronous exception', done => {
         let server = express()
             .use((err, req, res, next) => res.status(500).send(err.message).end())
-            .use(mung.json(error))
+            .use(ming.json(error))
             .get('/', (req, res) => res.status(200).json({ a: 'a' }).end());
         request(server)
             .get('/')
@@ -136,7 +136,7 @@ describe ('mung json', () => {
     it('should 500 on an asynchronous exception', done => {
         let server = express()
             .use((err, req, res, next) => res.status(500).send(err.message).end())
-            .use(mung.json(error))
+            .use(ming.json(error))
             .get('/', (req, res) => {
                 process.nextTick(() => {
                     res.status(200).json({ a: 'a' }).end();
